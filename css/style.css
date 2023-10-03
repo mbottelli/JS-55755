@@ -1,0 +1,10 @@
+body {
+    background-color: darkslategrey;
+}
+main div {
+    height: 100vh;
+    padding: 300px;
+}
+main div table {
+    width: 40vw;
+}

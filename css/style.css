@@ -1,10 +1,10 @@
 body {
     background-color: darkslategrey;
 }
-main div {
-    height: 100vh;
-    padding: 300px;
+.container {
+    padding: 150px 0;
+    max-width: 700px;
 }
-main div table {
-    width: 40vw;
+.resultadoTirada div{
+    max-width: 300px;
 }

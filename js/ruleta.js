@@ -1,65 +1,57 @@
-// Para algunas cosas de este proyecto tomé inspiración de "https://dev.to/ozboware/one-way-to-make-roulette-using-javascript-part-1-41eb"
-// Para no plagiar, solo tomé algunas ideas y reducí la complejidad de la ruleta
-// Solo puede tomar apuestas por numeros específicos y por color
+// Solo puede tomar apuestas por numeros específicos, exceptuando 0
+
+// let dinero = 50000
 
 // Funcion simple para generar un número random, simulando la tirada de la ruleta
-function ruleta() {
-    return Math.round (Math.random() * 36);
-};
-
-// Funcion para solicitar al usuario que reingrese el número
-function chequeoNumero() {
-    console.log('Valor fuera del rango solicitado');
-    return parseInt(prompt(" El valor ingresado no coincide con los parametros solicitados\n Por favor ingrese un nuevo valor"));
+function numGen() {
+    return Math.round (Math.random() * 35 + 1);
 };
 
 // Variable de numeros total creada mediante for, para tener de referencia
-const numeros = [];
+const numArr = [];
 for (let index = 0; index <= 36; index++) {
-    numeros.push(index);
+    numArr.push(index);
 };
-// Variables de colores para consultar apuestas por color
-const rojoArr = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
-const negroArr = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35];
 
-let dinero = 50000
-
-let dineroPrint = document.
-
-
-
-for (i in numeros) {
-    
+function tirada (elec){
+    let tir = numGen();
+    console.log('Tirada es '+tir+' y elec es '+elec)
+    if (tir == elec) {
+        let htmlTir = `<h1 class="bg-success text-light resultadoTirada">¡Ganaste!</h1>`;
+        htmlTir += `<h1 class="bg-success text-light resultadoTirada">${tir}</h1>`;
+        document.getElementById("resultado").innerHTML = htmlTir;
+    } else {
+        let htmlTir = `<h1 class="bg-danger text-light resultadoTirada">¡Perdiste!</h1>`;
+        htmlTir += `<h1 class="bg-danger text-light resultadoTirada">${tir}</h1>`;
+        document.getElementById("resultado").innerHTML = htmlTir;
+    }
 }
 
 
-var indexTirada = 0;
+// Tabla creada mediante manejo de DOM, primer FOR para filas, segundo para columnas
+// Me falta encajarle el 0 y que se vea bien
+function creaTabla() {
+    let htmlTabla = '<div class="row g-0">';
+    for (let i = 1; i <= 3; i++) {
+        htmlTabla += '<div class="col">';
+        htmlTabla += '<div class="btn-group me-2" role="group" aria-label="First group">';
+        for (let o = 0+i; o < numArr.length; o += 3) {
+            htmlTabla +=`<button id="boton-${o}" type="button" class="btn btn-secondary">${o}</button>`;
+        }
+        htmlTabla += '</div>';
+        htmlTabla += '</div>';
+    };
+    htmlTabla += '</div>';
+    document.getElementById("tablaRuleta").innerHTML = htmlTabla;
+};
+creaTabla();
 
-// Creo un loop para el proceso se repita indefinidamente, eventualmente lo voy a reemplazar con otra cosa que sea mas adecuada
+// Funcion tirada() wrappeada dentro de función anónima porque sino ejecutaba la tirada al cargar la pagina
+for (let i = 1; i < numArr.length; i++) {
+    let elec = i
+    document.getElementById(`boton-${i}`).addEventListener ("click", function() {tirada(elec)}, false);
+};
 
-// while (true){
-//     console.log("Cantidad de tiradas: " + indexTirada);
-//     console.log('Solicitando input al usuario...');
-//     let valorInicial = parseInt(prompt("Ingrese un número entre 0 y 36"));
-
-//     // Únicamente para validar que es un número entre 0 y 36, eventualmente esto va a dejar de ser un prompt y tendría una interfaz donde el usuario pueda elegir con un click.
-//     console.log("Validando número...");
-//     while (valorInicial < 0 || valorInicial > 36 || isNaN(valorInicial)) {
-//         valorInicial = chequeoNumero();
-//     };
-
-//     console.log('¡Número validado!');
-//     console.log('El número elegido es ' + valorInicial + '\nEl color del número elegido es ' + colores[valorInicial]);
-//     console.log('Iniciando tirada...');
-
-//     // Probando encontré que para poder retener sin lugar a dudas el valor random, lo mejor era asociarlo a una variable apenas se invoca la función.
-//     var tirada = ruleta();
-//     console.log('La tirada fue de ' + tirada + '\nEl color de la tirada fue ' +  colores[tirada]);
-
-//     if (valorInicial == tirada) {
-//         alert("¡Ganaste! La tirada fue " + tirada)
-//     } else {
-//         alert('¡Perdiste! La tirada fue ' + tirada)
-//     };
-//     indexTirada++
-// };
+// Variables de colores para consultar apuestas por color
+// const rojoArr = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+// const negroArr = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35];

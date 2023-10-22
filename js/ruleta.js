@@ -1,11 +1,10 @@
 // Solo puede tomar apuestas por numeros específicos, exceptuando 0
 
+// Inicializacion de variables
 let idTirada = 0;
 let credValue = 100;
 const dateTime = luxon.DateTime;
-console.log(dateTime);
-
-//Inicializacion de variables
+let numElegido;
 let logTiradas = JSON.parse(localStorage.getItem("logTiradas"));
 if(!logTiradas){
     logTiradas=[];
@@ -14,14 +13,7 @@ if(!logTiradas){
     credValue = ultimaTirada.creditos;
     idTirada = ultimaTirada.id;
 };
-
-
-// Dibuja credValue
-function dibujaCredito (cred){
-    let htmlCred = `<span class="navbar-brand mb-0 h1 text-light">Creditos: ${cred}</span>`;
-    document.getElementById("htmlCred").innerHTML = htmlCred;
-}
-dibujaCredito (credValue);
+console.log(`¡Variables inicializadas!\nidTirada: ${idTirada}\ncreditos: ${credValue}`);
 
 // Funcion simple para generar un número random, simulando la tirada de la ruleta
 function numGen() {
@@ -34,7 +26,28 @@ for (let index = 0; index <= 36; index++) {
     numArr.push(index);
 };
 
-// Nesteo dos IFs, el primero para validar que el usuario tenga suficientes creditos, el segundo para manejar la tirada.
+// Dibuja cuantos creditos tiene el usuario
+function dibujaCredito (cred){
+    let htmlCred = `Creditos: ${cred}`;
+    document.getElementById("credSpan").innerHTML = htmlCred;
+}
+dibujaCredito (credValue);
+
+// Intervalo para realizar la tirada cada 1 minuto, parsea el numero elegido a la funcion de tirada, y limpia el numero elegido una vez finalizado. Si no se elige un numero, no realiza tirada
+setInterval(() => {
+    let timer = 60 - dateTime.now().second;
+    let htmlTimer = `Proxima: ${timer}s`;
+    document.getElementById("timeSpan").innerHTML = htmlTimer
+    if (timer == 60 && numElegido){
+        tirada(numElegido)
+        numElegido = undefined;
+        setTimeout(() => {
+            document.getElementById("htmlElegido").innerHTML = "";
+        }, 10000);
+    };
+}, 1000);
+
+// Funcion general que realiza la tirada, verifica si coincide con la eleccion del usuario, modifica la cantidad de creditos acorde y guarda los valores de la tirada al log
 function tirada (elec){
     let htmlTir;
     let tir;
@@ -47,22 +60,27 @@ function tirada (elec){
             credValue += 50;
             htmlTir = `<h1 class="bg-success text-light resultadoTirada">¡Ganaste!</h1>`;
             htmlTir += `<h1 class="bg-success text-light resultadoTirada">${tir}</h1>`;
-        } else {
+        } else if (tir != elec) {
             htmlTir = `<h1 class="bg-danger text-light resultadoTirada">¡Perdiste!</h1>`;
             htmlTir += `<h1 class="bg-danger text-light resultadoTirada">${tir}</h1>`;
-        }
+        } else {
+            htmlTir = "";
+        };
         dibujaCredito (credValue);
         logTiradas.push({id: idTirada, tirada: tir, elegido: elec, creditos: credValue});
-        let logTiradasEnJSON= JSON.stringify(logTiradas)
-        localStorage.setItem("logTiradas", logTiradasEnJSON)
+        localStorage.setItem("logTiradas", JSON.stringify(logTiradas));
     } else {
         htmlTir = `<h1 class="bg-danger text-light resultadoTirada">No tenes suficientes creditos</h1>`
     }
     document.getElementById("resultado").innerHTML = htmlTir;
+    setTimeout(() => {
+        document.getElementById("resultado").innerHTML = "";
+    }, 10000);
 }
 
 
-// Tabla creada mediante manejo de DOM, primer FOR para filas, segundo para columnas
+
+// Tabla creada mediante manejo de DOM para elegir un número, primer FOR para filas, segundo para columnas
 function creaTabla() {
     let htmlTabla = '<div class="row g-0">';
     for (let i = 1; i <= 3; i++) {
@@ -79,8 +97,13 @@ function creaTabla() {
 };
 creaTabla();
 
-// Funcion tirada() wrappeada dentro de función anónima porque sino ejecutaba la tirada al cargar la pagina
+// Añadiendo funciones a los botones de la ruleta.
 for (let i = 1; i < numArr.length; i++) {
     let elec = i
-    document.getElementById(`boton-${i}`).addEventListener ("click", function() {tirada(elec)}, false);
+    document.getElementById(`boton-${i}`).addEventListener ("click", function() {
+        numElegido = elec;
+        console.log("El número elegido es "+numElegido);
+        let htmlElec = `<h1 class="bg-dark text-light">El número elegido es ${numElegido}</h1>`;
+        document.getElementById("htmlElegido").innerHTML = htmlElec;
+    }, false);
 };

@@ -1,6 +1,18 @@
 // Solo puede tomar apuestas por numeros específicos, exceptuando 0
 
-// let dinero = 50000
+let usuarios = [];
+
+
+// Variable para creditos, junto con funcion para actualizar el valor al DOM
+let credValue = 100;
+
+console.log(JSON.stringify(credValue));
+
+function dibujaCredito (cred){
+    let htmlCred = `<span class="navbar-brand mb-0 h1 text-light">Creditos: ${cred}</span>`;
+    document.getElementById("htmlCred").innerHTML = htmlCred;
+}
+dibujaCredito (credValue);
 
 // Funcion simple para generar un número random, simulando la tirada de la ruleta
 function numGen() {
@@ -13,18 +25,26 @@ for (let index = 0; index <= 36; index++) {
     numArr.push(index);
 };
 
+// Nesteo dos IFs, el primero para validar que el usuario tenga suficientes creditos, el segundo para manejar la tirada.
 function tirada (elec){
-    let tir = numGen();
-    console.log('Tirada es '+tir+' y elec es '+elec)
-    if (tir == elec) {
-        let htmlTir = `<h1 class="bg-success text-light resultadoTirada">¡Ganaste!</h1>`;
-        htmlTir += `<h1 class="bg-success text-light resultadoTirada">${tir}</h1>`;
-        document.getElementById("resultado").innerHTML = htmlTir;
+    let htmlTir;
+    if (credValue >= 5) {
+        credValue -= 5;
+        let tir = numGen();
+        console.log('Tirada es '+tir+' y elec es '+elec)
+        if (tir == elec) {
+            credValue += 50;
+            htmlTir = `<h1 class="bg-success text-light resultadoTirada">¡Ganaste!</h1>`;
+            htmlTir += `<h1 class="bg-success text-light resultadoTirada">${tir}</h1>`;
+        } else {
+            htmlTir = `<h1 class="bg-danger text-light resultadoTirada">¡Perdiste!</h1>`;
+            htmlTir += `<h1 class="bg-danger text-light resultadoTirada">${tir}</h1>`;
+        }
     } else {
-        let htmlTir = `<h1 class="bg-danger text-light resultadoTirada">¡Perdiste!</h1>`;
-        htmlTir += `<h1 class="bg-danger text-light resultadoTirada">${tir}</h1>`;
-        document.getElementById("resultado").innerHTML = htmlTir;
+        htmlTir = `<h1 class="bg-danger text-light resultadoTirada">No tenes suficientes creditos</h1>`
     }
+    document.getElementById("resultado").innerHTML = htmlTir;
+    dibujaCredito (credValue);
 }
 
 

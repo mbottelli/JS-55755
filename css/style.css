@@ -2,9 +2,10 @@ body {
     background-color: darkslategrey;
 }
 .container {
-    padding: 150px 0;
+    padding: 100px 0;
     max-width: 700px;
+    max-height: 300px;
 }
-.resultadoTirada div{
-    max-width: 300px;
+.navbar-brand {
+    padding-left: 10vw;
 }

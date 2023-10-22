@@ -1,13 +1,22 @@
 // Solo puede tomar apuestas por numeros específicos, exceptuando 0
 
-let usuarios = [];
-
-
-// Variable para creditos, junto con funcion para actualizar el valor al DOM
+let idTirada = 0;
 let credValue = 100;
+const dateTime = luxon.DateTime;
+console.log(dateTime);
 
-console.log(JSON.stringify(credValue));
+//Inicializacion de variables
+let logTiradas = JSON.parse(localStorage.getItem("logTiradas"));
+if(!logTiradas){
+    logTiradas=[];
+} else {
+    let ultimaTirada= logTiradas[logTiradas.length-1];
+    credValue = ultimaTirada.creditos;
+    idTirada = ultimaTirada.id;
+};
 
+
+// Dibuja credValue
 function dibujaCredito (cred){
     let htmlCred = `<span class="navbar-brand mb-0 h1 text-light">Creditos: ${cred}</span>`;
     document.getElementById("htmlCred").innerHTML = htmlCred;
@@ -28,10 +37,12 @@ for (let index = 0; index <= 36; index++) {
 // Nesteo dos IFs, el primero para validar que el usuario tenga suficientes creditos, el segundo para manejar la tirada.
 function tirada (elec){
     let htmlTir;
+    let tir;
     if (credValue >= 5) {
         credValue -= 5;
-        let tir = numGen();
+        tir = numGen();
         console.log('Tirada es '+tir+' y elec es '+elec)
+        idTirada++;
         if (tir == elec) {
             credValue += 50;
             htmlTir = `<h1 class="bg-success text-light resultadoTirada">¡Ganaste!</h1>`;
@@ -40,16 +51,18 @@ function tirada (elec){
             htmlTir = `<h1 class="bg-danger text-light resultadoTirada">¡Perdiste!</h1>`;
             htmlTir += `<h1 class="bg-danger text-light resultadoTirada">${tir}</h1>`;
         }
+        dibujaCredito (credValue);
+        logTiradas.push({id: idTirada, tirada: tir, elegido: elec, creditos: credValue});
+        let logTiradasEnJSON= JSON.stringify(logTiradas)
+        localStorage.setItem("logTiradas", logTiradasEnJSON)
     } else {
         htmlTir = `<h1 class="bg-danger text-light resultadoTirada">No tenes suficientes creditos</h1>`
     }
     document.getElementById("resultado").innerHTML = htmlTir;
-    dibujaCredito (credValue);
 }
 
 
 // Tabla creada mediante manejo de DOM, primer FOR para filas, segundo para columnas
-// Me falta encajarle el 0 y que se vea bien
 function creaTabla() {
     let htmlTabla = '<div class="row g-0">';
     for (let i = 1; i <= 3; i++) {
@@ -71,7 +84,3 @@ for (let i = 1; i < numArr.length; i++) {
     let elec = i
     document.getElementById(`boton-${i}`).addEventListener ("click", function() {tirada(elec)}, false);
 };
-
-// Variables de colores para consultar apuestas por color
-// const rojoArr = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
-// const negroArr = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35];

@@ -5,14 +5,16 @@ let idTirada = 0;
 let credValue = 100;
 const dateTime = luxon.DateTime;
 let numElegido;
+
+// Busca en el storage por los creditos que anteriormente tenia el usuario
 let logTiradas = JSON.parse(localStorage.getItem("logTiradas"));
-if(!logTiradas){
-    logTiradas=[];
-} else {
-    let ultimaTirada= logTiradas[logTiradas.length-1];
-    credValue = ultimaTirada.creditos;
-    idTirada = ultimaTirada.id;
-};
+    if(!logTiradas){
+        logTiradas=[];
+    } else {
+        let ultimaTirada= logTiradas[logTiradas.length-1];
+        credValue = ultimaTirada.creditos;
+        idTirada = ultimaTirada.id;
+    };
 console.log(`¡Variables inicializadas!\nidTirada: ${idTirada}\ncreditos: ${credValue}`);
 
 // Funcion simple para generar un número random, simulando la tirada de la ruleta
@@ -22,9 +24,9 @@ function numGen() {
 
 // Variable de numeros total creada mediante for, para tener de referencia
 const numArr = [];
-for (let index = 0; index <= 36; index++) {
-    numArr.push(index);
-};
+    for (let index = 0; index <= 36; index++) {
+        numArr.push(index);
+    };
 
 // Dibuja cuantos creditos tiene el usuario
 function dibujaCredito (cred){
@@ -97,7 +99,7 @@ function creaTabla() {
 };
 creaTabla();
 
-// Añadiendo funciones a los botones de la ruleta.
+// Añade las funciones a los botones creados mediante creaTabla(), separado para manejarlo con mas comodidad
 for (let i = 1; i < numArr.length; i++) {
     let elec = i
     document.getElementById(`boton-${i}`).addEventListener ("click", function() {
